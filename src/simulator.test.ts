@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { getLessonProgress, initialState, lessons, simulatorReducer } from "./simulator";
+import {
+  INSTRUCTOR_LESSON_PASSWORD,
+  getLessonProgress,
+  initialState,
+  lessons,
+  simulatorReducer,
+} from "./simulator";
 
 function typeTerminalCommand(state: ReturnType<typeof simulatorReducer>, command: string) {
   let nextState = state;
@@ -57,6 +63,20 @@ describe("simulatorReducer", () => {
         type: "lesson.start",
         lessonId: "builtin-command-practice-1",
         accessPassword: "pass999",
+      }),
+    );
+
+    expect(state.screen).toBe("login");
+    expect(state.selectedLessonId).toBe("builtin-command-practice-1");
+    expect(state.lessonStartError).toBeNull();
+  });
+
+  it("starts a password-protected lesson when the instructor password is provided", () => {
+    const state = withTemporarilyEnabledLesson("builtin-command-practice-1", () =>
+      simulatorReducer(initialState, {
+        type: "lesson.start",
+        lessonId: "builtin-command-practice-1",
+        accessPassword: INSTRUCTOR_LESSON_PASSWORD,
       }),
     );
 

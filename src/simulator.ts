@@ -145,6 +145,7 @@ export type SimulatorAction =
 
 export const LESSON_USERNAME = "student";
 export const LESSON_PASSWORD = "student";
+export const INSTRUCTOR_LESSON_PASSWORD = "eisaku";
 export const CONSOLE_HOSTNAME = "linux-server";
 
 export const basicGnomeGuiSteps: Lesson["steps"] = [
@@ -1111,7 +1112,12 @@ export function simulatorReducer(
         return state;
       }
 
-      if (lesson.accessPassword && action.accessPassword !== lesson.accessPassword) {
+      const hasValidAccessPassword =
+        !lesson.accessPassword ||
+        action.accessPassword === lesson.accessPassword ||
+        action.accessPassword === INSTRUCTOR_LESSON_PASSWORD;
+
+      if (!hasValidAccessPassword) {
         return {
           ...state,
           lessonStartError: {
